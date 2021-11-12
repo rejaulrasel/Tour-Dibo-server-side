@@ -45,7 +45,78 @@ async function run(){
             const service = await servicesCollection.findOne(query);
             res.send(service);
         })
-        
+
+
+         // add events
+         app.post("/addEvent", async (req, res) => {
+            console.log(req.body);
+            const result = await eventsCollection.insertOne(req.body);
+            // console.log(result);
+        });
+
+
+        //My events
+        app.get("/myEvents/:email", async (req, res) => {
+            const result = await eventsCollection.find({
+                email: req.params.email,
+            }).toArray();
+            res.send(result);
+        });
+
+          //Delete Event
+          app.delete('/deleteEvents/:id', async (req, res) => {
+            const id = req.params.id;
+            //   console.log(id);
+            const query = { _id: ObjectId(id) };
+            const result = await eventsCollection.deleteOne(query);
+            //   console.log(result);
+            res.json(result);
+        })
+
+
+         //All Events
+         app.get("/allEvents", async (req, res) => {
+            const result = await eventsCollection.find({}).toArray();
+            // console.log(result);
+            res.send(result);
+        });
+
+        //Update Events
+        app.put('/update/:id', async (req, res) => {
+            const updatedUser = req.body;
+            console.log(req.body);
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+
+            const updateDoc = {
+                $set: {
+                    status: "Approve",
+                },
+            };
+
+            const result = await eventsCollection.updateOne(filter, updateDoc, options);
+            console.log('Updating user', id);
+            res.json(result);
+        })
+
+
+        //Find Events
+        app.put('/update/:id', async (req, res) => {
+            const id = req.params.id;
+            const updatedStatus = req.body ;
+            const filter = { _id: ObjectId(id) };
+            const updateDoc = {
+                $set: {
+                    status: updatedStatus.status,
+                },
+            }
+            const result = await eventsCollection.updateOne(filter, updateDoc)
+            console.log(result);
+            
+        })
+
+
     }
     finally{
         // await client.close();
