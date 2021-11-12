@@ -1,8 +1,9 @@
 const express = require('express')
 const { MongoClient } = require('mongodb');
-require("dotenv").config();//dotenv config
-const app = express()
 const cors = require('cors')//cors for own server connected with own;
+const ObjectId = require('mongodb').ObjectId;
+const app = express()
+require("dotenv").config();//dotenv config
 const port = process.env.PORT || 5000;
 
 
@@ -36,6 +37,15 @@ async function run(){
             const result = await servicesCollection.insertOne(newService);
             res.json(result);
         })
+
+         //Find single Service
+         app.get('/services/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const service = await servicesCollection.findOne(query);
+            res.send(service);
+        })
+        
     }
     finally{
         // await client.close();
