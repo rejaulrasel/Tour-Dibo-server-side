@@ -69,7 +69,7 @@ async function run(){
             //   console.log(id);
             const query = { _id: ObjectId(id) };
             const result = await eventsCollection.deleteOne(query);
-            //   console.log(result);
+              console.log(result);
             res.json(result);
         })
 
